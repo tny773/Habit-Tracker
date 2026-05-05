@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #ffe6f0, #f0e6ff);
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  color: #ff4da6;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #ff66b2, #cc99ff);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.button:hover {
+  opacity: 0.85;
+}
+
+.input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-right: 10px;
+}
+
+.logout {
+  float: right;
+  background: #ff4d4d;
+}
+
+.calendar-box {
+  border-radius: 8px;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.calendar-box:hover {
+  transform: scale(1.1);
+}
