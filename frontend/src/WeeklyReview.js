@@ -1,15 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 function WeeklyReview() {
   const [data, setData] = useState([]);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  useEffect(() => {
-    fetch(`http://localhost:5000/weekly/${user.id}`)
+  const loadWeeklyReview = useCallback(() => {
+    if (!user) return;
+
+    fetch(`${process.env.REACT_APP_API_URL}/weekly/${user.id}`)
       .then((res) => res.json())
       .then((d) => setData(d));
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    loadWeeklyReview();
+  }, [loadWeeklyReview]);
 
   // count moods
   const moodCount = {};

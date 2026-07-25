@@ -19,8 +19,8 @@ function Auth({ setUser }) {
     setLoading(true);
 
     const url = isLogin
-      ? "http://localhost:5000/login"
-      : "http://localhost:5000/register";
+      ? `${process.env.REACT_APP_API_URL}/login`
+      : `${process.env.REACT_APP_API_URL}/register`;
 
     const body = isLogin
       ? { email, password }

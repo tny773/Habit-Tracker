@@ -13,7 +13,7 @@ function Analytics() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    fetch(`http://localhost:5000/analytics/${user.id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/analytics/${user.id}`)
       .then((res) => res.json())
       .then((d) => setData(d));
   }, [user]);

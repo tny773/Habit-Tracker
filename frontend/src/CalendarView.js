@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 const moods = ["😊", "😐", "😞", "😴", "😤"];
 
@@ -14,19 +14,21 @@ function CalendarView() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const loadCalendar = () => {
+  const loadCalendar = useCallback(() => {
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth() + 1;
 
-    fetch(`http://localhost:5000/calendar/${user.id}/${year}/${month}`)
+    fetch(`${process.env.REACT_APP_API_URL}/calendar/${user.id}/${year}/${month}`)
       .then((res) => res.json())
       .then((d) => setData(d));
-  };
+  }, [user]);
 
   useEffect(() => {
-    if (user) loadCalendar();
-  }, [user]);
+    if (user) {
+      loadCalendar();
+    }
+  }, [user, loadCalendar]);
 
   const handleSubmit = async () => {
     const formData = new FormData();
@@ -36,7 +38,7 @@ function CalendarView() {
 
     if (image) formData.append("image", image);
 
-    await fetch("http://localhost:5000/journal", {
+    await fetch(`${process.env.REACT_APP_API_URL}/journal`, {
       method: "POST",
       body: formData,
     });
@@ -51,7 +53,7 @@ function CalendarView() {
     formData.append("date", selectedDate);
     formData.append("mood", mood);
 
-    await fetch("http://localhost:5000/mood", {
+    await fetch(`${process.env.REACT_APP_API_URL}/mood`, {
       method: "POST",
       body: formData,
     });
@@ -67,7 +69,7 @@ function CalendarView() {
     formData.append("date", selectedDate);
     formData.append("text", reflection);
 
-    await fetch("http://localhost:5000/reflection", {
+    await fetch(`${process.env.REACT_APP_API_URL}/reflection`, {
       method: "POST",
       body: formData,
     });
@@ -100,7 +102,7 @@ function CalendarView() {
                 setIsEditing(false);
 
                 const res = await fetch(
-                  `http://localhost:5000/journal/${user.id}/${date}`
+                  `${process.env.REACT_APP_API_URL}/journal/${user.id}/${date}`
                 );
 
                 if (res.status === 200) {
@@ -114,7 +116,7 @@ function CalendarView() {
 
                 // ✅ LOAD REFLECTION
                 const refRes = await fetch(
-                  `http://localhost:5000/reflection/${user.id}/${date}`
+                  `${process.env.REACT_APP_API_URL}/reflection/${user.id}/${date}`
                 );
                 const refData = await refRes.json();
                 setReflection(refData.text || "");
@@ -129,7 +131,7 @@ function CalendarView() {
             >
               {info?.image ? (
                 <img
-                  src={`http://localhost:5000/${info.image.replace("\\", "/")}`}
+                  src={`${process.env.REACT_APP_API_URL}/${info.image.replace("\\", "/")}`}
                   alt=""
                   style={img}
                 />
@@ -173,7 +175,8 @@ function CalendarView() {
 
               {viewEntry.image && (
                 <img
-                  src={`http://localhost:5000/${viewEntry.image}`}
+                  src={`${process.env.REACT_APP_API_URL}/${viewEntry.image}`}
+                  alt="Journal entry"
                   style={previewImg}
                 />
               )}

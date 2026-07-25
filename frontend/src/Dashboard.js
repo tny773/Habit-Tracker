@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import CalendarView from "./CalendarView";
 import Analytics from "./Analytics";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,16 +18,16 @@ function Dashboard({ setUser }) { // ✅ FIXED
   const user = JSON.parse(localStorage.getItem("user"));
 
   // ---------------- HABITS ----------------
-  const loadHabits = async () => {
+  const loadHabits = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:5000/habits/${user.id}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/habits/${user.id}`);
       const data = await res.json();
       setHabits(data);
 
       let streakData = {};
       for (let habit of data) {
         const res = await fetch(
-          `http://localhost:5000/habits/${habit.id}/streak`
+          `${process.env.REACT_APP_API_URL}/habits/${habit.id}/streak`
         );
         const s = await res.json();
         streakData[habit.id] = s.streak;
@@ -36,12 +36,12 @@ function Dashboard({ setUser }) { // ✅ FIXED
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [user]);
 
   const createHabit = async () => {
     if (!newHabit) return;
 
-    await fetch("http://localhost:5000/habits", {
+    await fetch(`${process.env.REACT_APP_API_URL}/habits`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: newHabit, user_id: user.id }),
@@ -53,7 +53,7 @@ function Dashboard({ setUser }) { // ✅ FIXED
 
   const markHabit = async (habitId) => {
     const res = await fetch(
-      `http://localhost:5000/habits/${habitId}/check`,
+      `${process.env.REACT_APP_API_URL}/habits/${habitId}/check`,
       { method: "POST" }
     );
 
@@ -70,7 +70,7 @@ function Dashboard({ setUser }) { // ✅ FIXED
     if (!window.confirm("Delete this habit?")) return;
 
     const res = await fetch(
-      `http://localhost:5000/habits/${habitId}`,
+      `${process.env.REACT_APP_API_URL}/habits/${habitId}`,
       { method: "DELETE" }
     );
 
@@ -81,15 +81,15 @@ function Dashboard({ setUser }) { // ✅ FIXED
   };
 
   // ---------------- TODOS ----------------
-  const loadTodos = async () => {
-    const res = await fetch(`http://localhost:5000/todos/${user.id}`);
+  const loadTodos = useCallback(async () => {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/todos/${user.id}`);
     setTodos(await res.json());
-  };
+  }, [user]);
 
   const createTodo = async () => {
     if (!newTodo) return;
 
-    await fetch("http://localhost:5000/todos", {
+    await fetch(`${process.env.REACT_APP_API_URL}/todos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: newTodo, user_id: user.id }),
@@ -100,23 +100,25 @@ function Dashboard({ setUser }) { // ✅ FIXED
   };
 
   const toggleTodo = async (id) => {
-    await fetch(`http://localhost:5000/todos/${id}/toggle`, {
+    await fetch(`${process.env.REACT_APP_API_URL}/todos/${id}/toggle`, {
       method: "POST",
     });
     loadTodos();
   };
 
   const deleteTodo = async (id) => {
-    await fetch(`http://localhost:5000/todos/${id}`, {
+    await fetch(`${process.env.REACT_APP_API_URL}/todos/${id}`, {
       method: "DELETE",
     });
     loadTodos();
   };
 
   useEffect(() => {
-    loadHabits();
-    loadTodos();
-  }, []);
+    if (user) {
+      loadHabits();
+      loadTodos();
+    }
+  }, [user, loadHabits, loadTodos]);
 
   if (!user) return <div>Please login</div>;
 
