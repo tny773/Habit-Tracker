@@ -54,7 +54,7 @@ const baseBlob = {
   position: "fixed",
   width: "300px",
   height: "300px",
-  borderRadius: "50%",
+  borderRadius: "52%",
   filter: "blur(80px)",
   zIndex: 0,
 };
