@@ -115,6 +115,7 @@ function Auth({ setUser }) {
 
 /* 🔥 FLOATING INPUT */
 function FloatingInput({ label, value, setValue, type = "text", onKeyDown }) {
+  const [focused, setFocused] = useState(false);
   return (
     <div style={{ position: "relative", marginBottom: "18px" }}>
       <input
@@ -122,14 +123,16 @@ function FloatingInput({ label, value, setValue, type = "text", onKeyDown }) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={onKeyDown}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         style={input}
       />
       <label
         style={{
           ...labelStyle,
-          top: value ? "-8px" : "50%",
-          fontSize: value ? "12px" : "14px",
-          color: value ? "#d8a7b1" : "#999",
+          top: focused || value ? "-8px" : "50%",
+          fontSize: focused || value ? "12px" : "14px",
+          color: focused || value ? "#d8a7b1" : "#999",
         }}
       >
         {label}
