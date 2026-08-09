@@ -43,8 +43,9 @@ function Auth({ setUser }) {
         toast.error(data.error || data.message);
       }
     } catch (err) {
-      toast.error("Something went wrong");
-    }
+        console.error("Login/Register Error:", err);
+        toast.error(err.message);
+      }
 
     setLoading(false);
   };

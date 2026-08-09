@@ -10,7 +10,10 @@ app = Flask(__name__)
 CORS(app)
 
 # ---------------- CONFIG ----------------
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    "DATABASE_URL",
+    "sqlite:///database.db"
+    )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 UPLOAD_FOLDER = "uploads"
