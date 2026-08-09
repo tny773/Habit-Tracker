@@ -167,6 +167,7 @@ const input = {
   borderRadius: "12px",
   border: "1px solid #ddd",
   outline: "none",
+  caretColor: "#d8a7b1",
 };
 
 const labelStyle = {

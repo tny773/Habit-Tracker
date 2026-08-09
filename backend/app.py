@@ -93,7 +93,13 @@ def register():
     db.session.add(user)
     db.session.commit()
 
-    return jsonify({"message": "User registered"}), 201
+    return jsonify({
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email
+            }
+        }), 201
 
 
 @app.route("/login", methods=["POST"])
