@@ -11,6 +11,7 @@ function Dashboard({ setUser }) { // ✅ FIXED
   const [newHabit, setNewHabit] = useState("");
   const [streaks, setStreaks] = useState({});
   const [activeTab, setActiveTab] = useState("calendar");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
@@ -125,16 +126,64 @@ function Dashboard({ setUser }) { // ✅ FIXED
   return (
     <>
       <BackgroundBlobs />
+      <ResponsiveStyles />
 
-      <div style={container}>
+      {/* MOBILE MENU BUTTON */}
+      <motion.button
+        whileTap={{ scale: 0.95}}
+        onClick={() => setMenuOpen(true)}
+        style={menuButton}
+        className="betterup-menu-button"
+        aria-label="Open menu"
+        >
+          ☰
+        </motion.button>
+
+      <div style={container} className="betterup-container">
+        {/* MOBILE MENU OVERLAY */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMenuOpen(false)}
+              style={menuOverlay}
+              className="betterup-menu-overlay"
+            />
+          )}
+        </AnimatePresence>
+
         {/* SIDEBAR */}
-        <div style={sidebar}>
-          <h2 style={logo}>BetterUp</h2>
+        <div
+          style={{
+            ...sidebar,
+            position: "relative",
+            zIndex: 1003
+          }}
+          className={`betterup-sidebar${menuOpen ? " mobile-open" : ""}`}
+        >
+          <div style={mobileSidebarHeader}>
+            <h2 style={logo}>BetterUp</h2>
+
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setMenuOpen(false)}
+              style={closeButton}
+              className="betterup-close-button"
+              aria-label="Close menu"
+            >
+              ×
+            </motion.button>
+          </div>
 
           {["calendar", "habits", "todo", "analytics", "weekly"].map((tab) => (
             <motion.div
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => {
+                setActiveTab(tab);
+                setMenuOpen(false);
+              }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.96 }}
               style={{
@@ -177,7 +226,7 @@ function Dashboard({ setUser }) { // ✅ FIXED
         </div>
 
         {/* MAIN */}
-        <div style={main}>
+        <div style={main} className="betterup-main">
           <h1 style={heading}>Hi {user.username}</h1>
 
           <AnimatePresence mode="wait">
@@ -298,6 +347,46 @@ const container = {
   zIndex: 1,                   // 🔥 BRINGS UI ABOVE BLOBS
 };
 
+const menuButton = {
+  display: "none",
+  position: "fixed",
+  top: "18px",
+  left:"18px",
+  zIndex: 1002,
+  width: "44px",
+  height: "44px",
+  borderRadius: "12px",
+  border: "1px solid rgba(255,255,255,0.4)",
+  background: "rgba(255,255,255,0.7)",
+  backdropFilter: "blur(12px)",
+  fontSize: "24px",
+  cursor: "pointer",
+  color: "#444",
+};
+
+const menuOverlay = {
+  display: "none",
+  position: "fixed",
+  inset: 0,
+  background: "rgba(0,0,0,0.15)",
+  zIndex: 999,
+};
+
+const mobileSidebarHeader = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+};
+
+const closeButton = {
+  display: "none",
+  border: "none",
+  background: "transparent",
+  fontSize: "30px",
+  cursor: "pointer",
+  color: "#444",
+};
+
 const sidebar = {
   width: "260px",
   padding: "40px 25px",
@@ -384,5 +473,66 @@ const btnDelete = {
   padding: "6px 12px",
   borderRadius: "8px",
 };
+
+const responsiveStyles = `
+  @media (max-width: 768px) {
+    .betterup-menu-button {
+      display: block !important;
+    }
+
+    .betterup-menu-overlay {
+      display: block !important;
+    }
+
+    .betterup-sidebar {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100vh !important;
+      width: 260px !important;
+      box-sizing: border-box !important;
+      z-index: 1003 !important;
+      transform: translateX(-105%) !important;
+      transition: transform 0.3s ease !important;
+      overflow-y: auto !important;
+    }
+
+    .betterup-sidebar.mobile-open {
+      transform: translateX(0) !important;
+    }
+
+    .betterup-close-button {
+      display: block !important;
+    }
+
+    .betterup-main {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 70px 20px 30px !important;
+    }
+
+    .betterup-container {
+      display: block !important;
+      width: 100% !important;
+    }
+
+    .betterup-input-row {
+      flex-direction: column !important;
+    }
+
+    .betterup-input-row button {
+      width: 100%;
+    }
+
+    .betterup-card {
+      flex-direction: column !important;
+      gap: 12px !important;
+    }
+  }
+`;
+
+function ResponsiveStyles() {
+  return <style>{responsiveStyles}</style>;
+}
 
 export default Dashboard;
